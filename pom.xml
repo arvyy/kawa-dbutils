@@ -6,7 +6,7 @@
 
     <groupId>com.github.arvyy</groupId>
     <artifactId>kawa-dbutils</artifactId>
-    <version>1.7.1</version>
+    <version>1.7.2-SNAPSHOT</version>
 
     <name>Kawa db utils</name>
     <description>
