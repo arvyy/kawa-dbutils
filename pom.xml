@@ -31,9 +31,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/arvyy/kawadbutils.git</connection>
-        <developerConnection>scm:git:ssh://github.com:arvyy/kawadbutils.git</developerConnection>
-        <url>http://github.com/arvyy/kawadbutils/tree/master</url>
+        <connection>scm:git:git://github.com/arvyy/kawa-dbutils.git</connection>
+        <developerConnection>scm:git:ssh://github.com:arvyy/kawa-dbutils.git</developerConnection>
+        <url>http://github.com/arvyy/kawa-dbutils/tree/master</url>
     </scm>
 
     <properties>
