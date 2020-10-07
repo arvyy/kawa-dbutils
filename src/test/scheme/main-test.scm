@@ -36,8 +36,8 @@
   (test-assert
     (every 
       (lambda (row)
-        (and (assoc "id" row)
-             (assoc "val" row)))
+        (and (assoc 'id row)
+             (assoc 'val row)))
       rez)))
 
 (test-group
@@ -47,8 +47,8 @@
                       1 "Foo"))
   
   (test-equal
-    '((("id" . 1)
-       ("val" . "Foo")))
+    '(((id . 1)
+       (val . "Foo")))
     rez))
 
 (test-group
@@ -57,12 +57,12 @@
   (define rez (query qr "select * from TestTable where id = 1" 'S))
   
   (test-equal
-    '("id" . 1)
-    (assoc "id" rez))
+    '(id . 1)
+    (assoc 'id rez))
   
   (test-equal
-    '("val" . "Foo")
-    (assoc "val" rez)))
+    '(val . "Foo")
+    (assoc 'val rez)))
 
 (test-group
   "Test select single with params"
@@ -70,12 +70,12 @@
   (define rez (query qr "select * from TestTable where id = ?" 'S 1))
   
   (test-equal
-    '("id" . 1)
-    (assoc "id" rez))
+    '(id . 1)
+    (assoc 'id rez))
   
   (test-equal
-    '("val" . "Foo")
-    (assoc "val" rez)))
+    '(val . "Foo")
+    (assoc 'val rez)))
 
 (test-group
   "Test select single when not exists"
@@ -92,8 +92,8 @@
   (test-equal 1 count)
   (let ((rez (query qr "select * from TestTable where id = 3" 'S)))
    (test-equal 
-     '("id" . 3)
-     (assoc "id" rez))))
+     '(id . 3)
+     (assoc 'id rez))))
 
 (test-group
   "Test insert null"
@@ -102,11 +102,11 @@
   (test-equal 1 count)
   (let ((rez (query qr "select * from TestTable where val is null" 'S)))
    (test-equal 
-     '("id" . 3)
-     (assoc "id" rez))
+     '(id . 3)
+     (assoc 'id rez))
    (test-equal
-     '("val" . #f)
-     (assoc "val" rez))))
+     '(val . #f)
+     (assoc 'val rez))))
 
 (test-group
   "Test insert and get autoincrement id"
@@ -124,8 +124,8 @@
   (test-equal 1 count)
   (let ((rez (query qr "select * from TestTable where id = 1" 'S)))
    (test-equal 
-     '("val" . "Baz")
-     (assoc "val" rez))))
+     '(val . "Baz")
+     (assoc 'val rez))))
 
 (test-group
   "Test delete"

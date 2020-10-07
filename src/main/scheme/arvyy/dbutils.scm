@@ -68,7 +68,7 @@
     (define (map->alist m)
       (define (entry->pair e ::java.util.Map:Entry)
         (cons
-          (e:getKey)
+          (string->symbol (e:getKey))
           (null->f (e:getValue))))
       (cond
         ((equal? m #!null) #f)
