@@ -8,6 +8,7 @@
     (class org.apache.commons.dbutils QueryRunner ResultSetHandler)
     (class org.apache.commons.dbutils.handlers MapHandler MapListHandler ScalarHandler)
     (class org.apache.commons.dbcp2 BasicDataSource))
+  
   (export
     make-query-runner
     query
