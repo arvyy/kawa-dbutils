@@ -103,49 +103,95 @@
     (define (make-query-runner driver ::String  url ::String  name ::String password ::String) ::QueryRunner
       (QueryRunner (make-data-source driver url name password)))
     
-    ;; unfortunately it seems syntax instead of proc is needed
-    ;; to properly pass IN parameters to varargs parameter on java side
-    ;; trying to create and use array for some reason not work
-    (define-syntax query
-      (syntax-rules ()
-        ((query query-runner sql handler arg ...)
-         (with-exception-handler
-           (exception-handler/attach-statement sql)
-           (lambda ()
-             (let ()
+    (define query
+      (let ((query-method-with-conn 
+              (*:getDeclaredMethod QueryRunner
+                                   "query"
+                                   Connection:class
+                                   java.lang.String:class
+                                   ResultSetHandler:class
+                                   (java.lang.Class:forName "[Ljava.lang.Object;")))
+            (query-method-no-conn 
+              (*:getDeclaredMethod QueryRunner
+                                   "query"
+                                   java.lang.String:class
+                                   ResultSetHandler:class
+                                   (java.lang.Class:forName "[Ljava.lang.Object;"))))
+        (lambda (query-runner sql handler . args)
+          (with-exception-handler
+            (exception-handler/attach-statement sql)
+            (lambda ()
               (define h ::ResultSetHandler handler)
               (define qr ::QueryRunner query-runner)
+              (define args-java-lst (java.util.ArrayList))
+              (for-each
+                (lambda (arg)
+                  (args-java-lst:add (f->null arg)))
+                args)
+              (define args-java-array (args-java-lst:toArray))
               (if (in-transaction?)
                   (let ((conn ::Connection (connection)))
-                   (qr:query conn (->string sql) h (f->null arg) ...))
-                  (qr:query (->String sql) h (f->null arg) ...))))))))
+                   (query-method-with-conn:invoke qr conn (->String sql) h args-java-array))
+                  (query-method-no-conn:invoke qr (->String sql) h args-java-array)))))))
     
-    (define-syntax update
-      (syntax-rules ()
-        ((update query-runner sql arg ...)
-         (with-exception-handler
-           (exception-handler/attach-statement sql)
-           (lambda ()
-             (let ((qr ::QueryRunner query-runner))
+    (define update
+      (let ((update-method-with-conn 
+              (*:getDeclaredMethod QueryRunner
+                                   "update"
+                                   Connection:class
+                                   java.lang.String:class
+                                   (java.lang.Class:forName "[Ljava.lang.Object;")))
+            (update-method-no-conn 
+              (*:getDeclaredMethod QueryRunner
+                                   "update"
+                                   java.lang.String:class
+                                   (java.lang.Class:forName "[Ljava.lang.Object;"))))
+        (lambda (query-runner sql . args)
+          (with-exception-handler
+            (exception-handler/attach-statement sql)
+            (lambda ()
+              (define qr ::QueryRunner query-runner)
+              (define args-java-lst (java.util.ArrayList))
+              (for-each
+                (lambda (arg)
+                  (args-java-lst:add (f->null arg)))
+                args)
+              (define args-java-array (args-java-lst:toArray))
               (if (in-transaction?)
                   (let ((conn ::Connection (connection)))
-                   (qr:update conn (->String sql) (f->null arg) ...) )
-                  (qr:update (->String sql) (f->null arg) ...))))))))
+                   (update-method-with-conn:invoke qr conn (->String sql) args-java-array) )
+                  (update-method-no-conn:invoke qr (->String sql) args-java-array)))))))
     
-    (define-syntax insert
-      (syntax-rules ()
-        ((insert query-runner sql arg ...)
-         (with-exception-handler
-           (exception-handler/attach-statement sql)
-           (lambda ()
-             (let ((qr ::QueryRunner query-runner)
-                   (handler ::ResultSetHandler (handler/scalar)))
-               (define rez
-                 (if (in-transaction?)
-                     (let ((conn ::Connection (connection)))
-                      (qr:insert conn (->String sql) handler (f->null arg) ...) )
-                     (qr:insert (->String sql) handler (f->null arg) ...)))
-               rez))))))
+    (define insert
+      (let ((insert-method-with-conn 
+              (*:getDeclaredMethod QueryRunner
+                                   "insert"
+                                   Connection:class
+                                   java.lang.String:class
+                                   ResultSetHandler:class
+                                   (java.lang.Class:forName "[Ljava.lang.Object;")))
+            (insert-method-no-conn 
+              (*:getDeclaredMethod QueryRunner
+                                   "insert"
+                                   java.lang.String:class
+                                   ResultSetHandler:class
+                                   (java.lang.Class:forName "[Ljava.lang.Object;"))))
+        (lambda (query-runner sql . args)
+          (with-exception-handler
+            (exception-handler/attach-statement sql)
+            (lambda ()
+              (define qr ::QueryRunner query-runner)
+              (define handler ::ResultSetHandler (handler/scalar))
+              (define args-java-lst (java.util.ArrayList))
+              (for-each
+                (lambda (arg)
+                  (args-java-lst:add (f->null arg)))
+                args)
+              (define args-java-array (args-java-lst:toArray))
+              (if (in-transaction?)
+                  (let ((conn ::Connection (connection)))
+                   (insert-method-with-conn:invoke qr conn (->String sql) handler args-java-array) )
+                  (insert-method-no-conn:invoke qr (->String sql) handler args-java-array)))))))
     
     (define (handler/scalar) ::ResultSetHandler
       (lambda (rs ::ResultSet)
