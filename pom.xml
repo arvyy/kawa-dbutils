@@ -5,7 +5,7 @@
 
     <groupId>com.github.arvyy</groupId>
     <artifactId>kawa-dbutils</artifactId>
-    <version>1.7.4-SNAPSHOT</version>
+    <version>1.7.4</version>
 
     <name>Kawa db utils</name>
     <description>
@@ -33,7 +33,7 @@
         <connection>scm:git:https://github.com/arvyy/kawa-dbutils.git</connection>
         <developerConnection>scm:git:https://github.com/arvyy/kawa-dbutils.git</developerConnection>
         <url>http://github.com/arvyy/kawa-dbutils/tree/master</url>
-      <tag>HEAD</tag>
+      <tag>kawa-dbutils-1.7.4</tag>
   </scm>
 
     <properties>
